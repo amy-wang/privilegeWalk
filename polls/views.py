@@ -40,6 +40,7 @@ def vote(request, question_id):
         return render(request, 'polls/detail.html', {
             'question': question,
             'error_message': "You didn't select a choice.",
+            'percent_response': percentage(question)
         })
     else:
         selected_choice.votes += 1
@@ -47,4 +48,15 @@ def vote(request, question_id):
         # Always return an HttpResponseRedirect after successfully dealing
         # with POST data. This prevents data from being posted twice if a
         # user hits the Back button.
-        return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
+        return HttpResponseRedirect(reverse('polls:results', args=(question.id,)), {
+            'percent_response': percentage(question)
+            })
+
+
+def percentage(question):
+    yes = Choice.objects.filter(choice_text = "Step Forward").values('votes')
+    yesVotes = float(notMuch[0]['votes'])
+    no = Choice.objects.filter(choice_text = "Stay Standing").values('votes')
+    noVotes = float(theSky[0]['votes'])
+    percent = yesVotes / (yesVotes + noVotesd)
+    return percent
